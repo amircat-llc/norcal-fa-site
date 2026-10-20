@@ -71,7 +71,7 @@
   }
   function title(m) { return "FA meeting — " + m.city; }
   function description(m) {
-    var c = m.contacts.map(function (x) { return x.name + " " + x.phone; }).join("; ");
+    var c = m.contacts.map(function (x) { return (x.name + " " + x.phone).trim(); }).join("; ");
     return [DAY_NAMES[m.day] + " " + m.start + "–" + m.end, venueLabel(m), m.address, c ? "Contacts: " + c : "", "Food Addicts in Recovery Anonymous — Bay Area"].filter(Boolean).join("\n");
   }
   function venueLabel(m) { return m.room ? m.venue + ", " + m.room : m.venue; }
@@ -125,7 +125,7 @@
   function contacts(m) {
     return '<ul class="contacts">' + m.contacts.map(function (c) {
       var href = telHref(c.phone);
-      return "<li>" + esc(c.name) + " " + (href ? '<a href="' + href + '">' + esc(c.phone) + "</a>" : esc(c.phone)) + "</li>";
+      return "<li>" + esc(c.name) + (c.phone ? " " : "") + (href ? '<a href="' + href + '">' + esc(c.phone) + "</a>" : esc(c.phone)) + "</li>";
     }).join("") + "</ul>";
   }
   function row(m) {
