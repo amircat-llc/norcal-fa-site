@@ -72,7 +72,7 @@
   function title(m) { return "FA meeting — " + m.city; }
   function description(m) {
     var c = m.contacts.map(function (x) { return x.name + " " + x.phone; }).join("; ");
-    return [DAY_NAMES[m.day] + " " + m.start + "–" + m.end, m.venue, m.address, c ? "Contacts: " + c : "", "Food Addicts in Recovery Anonymous — Northern California"].filter(Boolean).join("\n");
+    return [DAY_NAMES[m.day] + " " + m.start + "–" + m.end, m.venue, m.address, c ? "Contacts: " + c : "", "Food Addicts in Recovery Anonymous — Bay Area"].filter(Boolean).join("\n");
   }
   function location(m) { return m.venue + ", " + m.address; }
 
