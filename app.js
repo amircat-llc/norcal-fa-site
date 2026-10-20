@@ -1,7 +1,7 @@
 (function () {
   "use strict";
 
-  var MEETINGS = window.FA_MEETINGS || [];
+  var MEETINGS = [];
   var DAYS = ["Tue", "Wed", "Thu", "Fri", "Sat"];
   var DAY_NAMES = { Tue: "Tuesday", Wed: "Wednesday", Thu: "Thursday", Fri: "Friday", Sat: "Saturday" };
   var DAY_ORDER = { Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 };
@@ -72,9 +72,10 @@
   function title(m) { return "FA meeting — " + m.city; }
   function description(m) {
     var c = m.contacts.map(function (x) { return x.name + " " + x.phone; }).join("; ");
-    return [DAY_NAMES[m.day] + " " + m.start + "–" + m.end, m.venue, m.address, c ? "Contacts: " + c : "", "Food Addicts in Recovery Anonymous — Bay Area"].filter(Boolean).join("\n");
+    return [DAY_NAMES[m.day] + " " + m.start + "–" + m.end, venueLabel(m), m.address, c ? "Contacts: " + c : "", "Food Addicts in Recovery Anonymous — Bay Area"].filter(Boolean).join("\n");
   }
-  function location(m) { return m.venue + ", " + m.address; }
+  function venueLabel(m) { return m.room ? m.venue + ", " + m.room : m.venue; }
+  function location(m) { return venueLabel(m) + ", " + m.address; }
 
   function calendarLinks(m) {
     var o = nextOccurrence(m);
@@ -130,24 +131,21 @@
   function row(m) {
     return '<li class="meeting-row"><div class="row-time">' + fmtTime(m.start) + '</div><div class="row-main">' +
       '<div class="row-city">' + esc(m.city) + (m.accessible ? " · Accessible" : "") + "</div>" +
-      '<div class="row-venue">' + esc(m.venue) + '</div><div class="row-address">' + esc(m.address) + "</div>" +
+      '<div class="row-venue">' + esc(venueLabel(m)) + '</div><div class="row-address">' + esc(m.address) + "</div>" +
       contacts(m) + '<div class="row-actions"><a class="maps-link" href="' + esc(mapsUrl(m)) + '"' + ext + ">Open in Google Maps</a>" +
       addCal(m) + "</div></div></li>";
   }
   function tableRow(m) {
     return '<tr><td><span class="table-time">' + fmtTime(m.start) + "–" + fmtTime(m.end) + "</span></td>" +
-      "<td><strong>" + esc(m.city) + "</strong></td><td>" + esc(m.venue) + "</td>" +
+      "<td><strong>" + esc(m.city) + "</strong></td><td>" + esc(venueLabel(m)) + "</td>" +
       '<td><a href="' + esc(mapsUrl(m)) + '"' + ext + ">" + esc(m.address) + "</a></td>" +
       "<td>" + contacts(m) + "</td><td>" + (m.accessible ? "Wheelchair access" : "—") + "</td><td>" + addCal(m) + "</td></tr>";
   }
 
-  function defaultDay() {
-    var today = new Intl.DateTimeFormat("en-US", { timeZone: TZ, weekday: "short" }).format(new Date());
-    return DAYS.indexOf(today) !== -1 && MEETINGS.some(function (m) { return m.day === today; }) ? today : "any";
-  }
-
-  var state = { search: "", city: "everywhere", day: defaultDay(), time: "any", type: "any" };
+  var state = { search: "", city: "everywhere", day: "any", time: "any", type: "any" };
   var root = document.getElementById("meeting-finder");
+
+  function init() {
   var cities = Array.from(new Set(MEETINGS.map(function (m) { return m.city; }))).sort(function (a, b) { return a.localeCompare(b); });
 
   function opt(v, label, cur) { return '<option value="' + esc(v) + '"' + (v === cur ? " selected" : "") + ">" + esc(label) + "</option>"; }
@@ -176,7 +174,7 @@
         (state.day === "any" || m.day === state.day) &&
         (state.time === "any" || timeBucket(m.start) === state.time) &&
         (state.type !== "accessible" || !!m.accessible) &&
-        (!q || (m.city + " " + m.venue + " " + m.address + " " + m.day).toLowerCase().indexOf(q) !== -1);
+        (!q || (m.city + " " + venueLabel(m) + " " + m.address + " " + m.day).toLowerCase().indexOf(q) !== -1);
     }).sort(function (a, b) { return DAY_ORDER[a.day] - DAY_ORDER[b.day] || a.start.localeCompare(b.start); });
   }
 
@@ -209,4 +207,12 @@
   });
 
   render();
+  }
+
+  fetch("meetings.json")
+    .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(function (data) { MEETINGS = data; init(); })
+    .catch(function () {
+      root.innerHTML = '<p class="empty">Meeting list could not be loaded. Please refresh the page.</p>';
+    });
 })();
