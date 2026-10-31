@@ -60,7 +60,6 @@ h1,h2,h3{font-family:inherit;font-weight:650;line-height:1.25}
 a{color:var(--color-fa-blue)}
 .page{max-width:72rem;margin:0 auto;padding:0 1.25rem 3rem}
 .masthead{background:var(--color-fa-blue);color:#fff;padding:1.75rem 1.25rem}
-.logo{width:auto;max-width:min(100%,28rem);height:48px;margin:0 auto 1.25rem;display:block}
 .masthead h1{color:#fff;max-width:46rem;margin:0 auto;font-size:32px;font-weight:650}
 .no-dues{color:#fff;max-width:46rem;margin:.85rem auto 0;font-size:18px}
 .jump-nav{z-index:20;background:var(--color-fa-blue);position:sticky;top:0}
