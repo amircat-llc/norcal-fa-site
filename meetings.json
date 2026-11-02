@@ -200,6 +200,26 @@
     ]
   },
   {
+    "id": "fri-danville",
+    "day": "Fri",
+    "start": "19:00",
+    "end": "20:30",
+    "city": "Danville",
+    "venue": "Saint Timothy’s Episcopal Church",
+    "address": "1550 Diablo Rd., Danville, CA",
+    "accessible": false,
+    "contacts": [
+      {
+        "name": "Britney C.",
+        "phone": "925-487-7634"
+      },
+      {
+        "name": "Rachel W.",
+        "phone": "925-683-9456"
+      }
+    ]
+  },
+  {
     "id": "sat-walnut-creek",
     "day": "Sat",
     "start": "08:00",
