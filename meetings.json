@@ -207,7 +207,7 @@
     "city": "Danville",
     "venue": "Saint Timothy’s Episcopal Church",
     "address": "1550 Diablo Rd., Danville, CA",
-    "accessible": false,
+    "accessible": true,
     "contacts": [
       {
         "name": "Britney C.",
